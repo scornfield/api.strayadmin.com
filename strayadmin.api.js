@@ -3,14 +3,21 @@ var express = require('express');
 
 // Other Dependencies
 var bodyParser  = require('body-parser');
+Sequelize = require('sequelize');
 
 // Initialize App
 var app = express();
 
 // Require our modules - we want these to be globally accessible
-users = require("./config/users.js");  // Temporary until we have a database
-config = require("./config/config.js");  
-auth = require("./helpers/auth.js")(); 
+users = require('./config/users.js');  // Temporary until we have a database
+config = require('./config/config.js');  
+sequelize = require('./helpers/sequelize.js'); 
+
+// Models
+User = require('./models/user.js');
+
+// Other
+auth = require('./helpers/auth.js')(); 
 
 // Require our routes
 var authRoutes = require('./routes/auth'),

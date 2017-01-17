@@ -9,14 +9,15 @@ var params = {
 
 module.exports = function() {  
     var strategy = new Strategy(params, function(payload, done) {
-        var user = users[payload.id] || null;
-        if (user) {
-            return done(null, {
-                id: user.id
-            });
-        } else {
+        User.findById(payload.id).then(function(user) {
+            if (!user) {
+                return done(null, false, { message: 'Authentication failed. User not found.' });
+            }
+
+            return done(null, user);
+        }).catch(function(err) {
             return done(new Error("User not found"), null);
-        }
+        });
     });
     passport.use(strategy);
     return {
@@ -25,6 +26,9 @@ module.exports = function() {
         },
         authenticate: function() {
             return passport.authenticate("jwt", config.jwtSession);
+        },
+        makeToken: function(userId) {
+            return { id: userId }
         }
     };
 };
