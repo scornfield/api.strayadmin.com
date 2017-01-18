@@ -3,6 +3,11 @@ var jwt = require("jwt-simple");
 
 var router = express.Router(); 
 
+/* 
+	/auth/login
+
+	Verifies user credentials and provides a token or returns a 401 error
+*/
 router.post('/login', function(req, res) {
 	// Check for errors
 	if (!req.body.username || !req.body.password) {
@@ -25,6 +30,11 @@ router.post('/login', function(req, res) {
 	});
 });
 
+/* 
+	/auth/register
+
+	Signs up a new user
+*/
 router.post('/register', function(req, res) {
 	// Check for errors
 	if (!req.body.email) {
@@ -33,22 +43,12 @@ router.post('/register', function(req, res) {
 		return res.json({success: false, message: 'Please enter your username and password.'});
 	}
 
-	// We are going to use Credential to encrypt the passwords
-	var credential = require('credential');
-	var pw = credential();
-	var newPassword = req.body.password;
-
-	// Generate a password hash
-	pw.hash(newPassword, function (err, hash) {
-		if (err) { throw err; }
-
-		// Try to save the new user
-		User.create({ email: req.body.email, username: req.body.username, password: hash }).then(function() {
-			return res.json({success: true, message: 'Your account has been created. Sign in now!'});
-		}).catch(function (err) {
-	        console.log('Error occured: ', err);
-	        return res.json({ success: false, message: 'A database error occurred.' });
-		});
+	// Save our new user. The User model will encrypt the password before storing.
+	User.create({ email: req.body.email, username: req.body.username, password: req.body.password }).then(function() {
+		return res.json({success: true, message: 'Your account has been created. Sign in now!'});
+	}).catch(function (err) {
+        console.log('Error occured: ', err);
+        return res.json({ success: false, message: 'A database error occurred.' });
 	});
 });
 

@@ -1,7 +1,7 @@
 var sequelize = new Sequelize(config.dbName, config.dbUser, null, {
 	host: config.dbHost,
 	dialect: 'mysql',
-	logging: true, // TODO: turn this off when we're production ready
+	logging: console.log, // TODO: turn this off when we're production ready
 
 	pool: {
 		max: 5,
