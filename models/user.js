@@ -11,7 +11,7 @@ var User = sequelize.define('user',
 	}, 
 	{ 
 		// Table Configuration
-		tableName: 'users',
+		tableName: 'user',
 		timestamps: false
 	}
 );
